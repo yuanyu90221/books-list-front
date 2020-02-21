@@ -15,7 +15,7 @@ import {createBrowserHistory} from 'history';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
-store.dispatch(fetchBooks());
+
 export const history = createBrowserHistory({forceRefresh: true});
 ReactDOM.render(
     <Provider store={store}>

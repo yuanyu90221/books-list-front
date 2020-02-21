@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Book from '../components/Book';
-// import {books} from '../data';
+import {fetchBooks} from '../actions/book.actions';
 
 class Books extends Component {
     constructor(props) {
         super(props);
+    }
+
+    componentWillMount() {
+        this.props.onFetch();
     }
 
     render() {
@@ -55,4 +59,12 @@ const mapStateToProps = (state) => {
         error: state.booksData.error || null
     };
 };
-export default connect(mapStateToProps, null)(Books);
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onFetch: () => {
+            dispatch(fetchBooks());
+        }
+    }
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Books);
