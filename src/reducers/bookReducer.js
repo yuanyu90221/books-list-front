@@ -23,6 +23,9 @@ const bookReducer = (state = defaultState, action) => {
     switch (action.type) {
         case ADD_BOOK_SUCCESS:
             return {...state, books: [...state.books, action.payload]};
+        case ADD_BOOK_ERROR:
+            debugger;
+            return {...state,  error: action.payload};
         case FETCH_BOOKS_SUCCESS:
             return {...state, books: action.payload};
         case FETCH_BOOKS_LOADING:
