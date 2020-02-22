@@ -28,6 +28,34 @@ export const createBookError = (data) => {
         payload: data
     };
 };
+//DELETE 
+const deleteBookSuccess  = (id) => {
+    return {
+        type: DELETE_BOOK_SUCCESS,
+        payload:  {
+            id: id
+        }
+    }
+};
+const deleteBookError = (data) => {
+    return {
+        type: DELETE_BOOK_ERROR,
+        payload: data
+    };
+};
+export const deleteBook = (id) => {
+    return (dispatch) => {
+        return axios.delete(`${url}/${id}`)
+            .then(()=>{
+                dispatch(deleteBookSuccess(id))
+            }).catch(error=>{
+                const errorPayload = {};
+                errorPayload['message'] = error.response.data.message;
+                errorPayload['status'] = error.response.status;
+                dispatch(deleteBookError(errorPayload));
+            })
+    }
+}
 // EDIT
 export const editBookError = (data) =>{
     return {

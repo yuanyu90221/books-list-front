@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Book from '../components/Book';
-import {fetchBooks} from '../actions/book.actions';
+import {fetchBooks, deleteBook} from '../actions/book.actions';
 import {history} from '../index';
 class Books extends Component {
     constructor(props) {
@@ -51,6 +51,7 @@ class Books extends Component {
                                             book={book} 
                                             key={book.id}
                                             onEdit={this.handleEdit.bind(this)}
+                                            onDelete={this.props.onDelete}
                                             />
                                     )
                                 })
@@ -75,6 +76,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onFetch: () => {
             dispatch(fetchBooks());
+        },
+        onDelete: (id) => {
+            dispatch(deleteBook(id));
         }
     }
 };
