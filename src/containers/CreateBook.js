@@ -13,6 +13,19 @@ class CreateBook extends Component{
             year: ''
         };
     }
+    componentWillMount(){
+        const props = this.props;
+        if (props.location && props.location.state) {
+            const book = props.location.state.book;
+
+            this.setState({
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                year: book.year
+            });
+        }
+    }
     handleOnValueChange(e) {
         this.setState({
             [e.target.name]: e.target.value
@@ -32,6 +45,11 @@ class CreateBook extends Component{
     }
     render () {
         return (<div className="create-book">
+                {this.props.error ?
+                    <div className="alert alert-danger" role="alert">
+                        {this.props.error.message}
+                    </div>: ""
+                }
                 <form onSubmit={this.handleSubmit.bind(this)}> 
                     <div className="form-group">
                         <input
@@ -75,7 +93,7 @@ class CreateBook extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        error: state.booksData.error || null
+        error: state.booksData.error 
     };
 };
 

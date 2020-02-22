@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Book from '../components/Book';
 import {fetchBooks} from '../actions/book.actions';
-
+import {history} from '../index';
 class Books extends Component {
     constructor(props) {
         super(props);
@@ -11,7 +11,14 @@ class Books extends Component {
     componentWillMount() {
         this.props.onFetch();
     }
-
+    handleEdit(book) {
+        history.push({
+            pathname: `/edit/${book.id}`,
+            state: {
+                book: book
+            }
+        });
+    }
     render() {
         if (this.props.isLoading) {
             return (
@@ -40,7 +47,11 @@ class Books extends Component {
                             {
                                 this.props.books.map(book => {
                                     return (
-                                        <Book book={book} key={book.id}/>
+                                        <Book 
+                                            book={book} 
+                                            key={book.id}
+                                            onEdit={this.handleEdit.bind(this)}
+                                            />
                                     )
                                 })
                             }

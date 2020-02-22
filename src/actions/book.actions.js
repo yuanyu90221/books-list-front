@@ -28,37 +28,89 @@ export const createBookError = (data) => {
         payload: data
     };
 };
+// EDIT
+export const editBookError = (data) =>{
+    return {
+        type: EDIT_BOOK_ERROR,
+        payload: data
+    }
+};
+export const editBookSuccess = (data) =>{
+    return {
+        type: EDIT_BOOK_SUCCESS,
+        payload: data
+    }
+};
+export const editBook = (data) => {
+    const id = data.id;
+    return (dispatch) => {
+        return axios.put(url, data)
+            .then(()=>{
+                return axios.get(`${url}/${id}`)
+                    .then(response => {
+                        dispatch(editBookSuccess(response.data));
+                        history.push('/');
+                    })
+                    .catch(error=>{
+                        const errorPayload = {}
+                        errorPayload['message'] = error.response.data.message;
+                        errorPayload['status'] = error.response.status;
+
+                        dispatch(editBookError(errorPayload));
+                    });
+            }).catch((error)=>{
+                const errorPayload = {}
+                errorPayload['message'] = error.response.data.message;
+                errorPayload['status'] = error.response.status;
+
+                dispatch(editBookError(errorPayload));
+            });
+    }
+}
 // CREATE 
 export const createBook =(book) => {
-    const data = {
-        title: book.title,
-        author: book.author,
-        year: book.year
-    };
-    return (dispatch) => {
-        return axios.post(url, data)
-            .then(response =>{
-                const id = response.data;
-
-                axios.get(`${url}/${id}`)
-                    .then(response => {
-                        dispatch(createBookSuccess(response.data));
-                        history.push('/');
-                    }).catch(error=>{
-                        console.log(error.response.data);
-                        const errorPayload = {};
-                        errorPayload['message'] = error.response.data;
-                        errorPayload['status'] = error.response.status;
-                        dispatch(createBookError(errorPayload));
-                    })
-            }).catch(error=>{
-                console.log(error.response.data);
-                const errorPayload = {};
-                errorPayload['message'] = error.response.data;
-                errorPayload['status'] = error.response.status;
-                dispatch(createBookError(errorPayload));
-            })
+    if (book.id) {
+        const data = {
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            year: book.year
+        };
+        return (dispatch) => {
+            dispatch(editBook(book));
+        }
+    } else {
+        const data = {
+            title: book.title,
+            author: book.author,
+            year: book.year
+        };
+        return (dispatch) => {
+            return axios.post(url, data)
+                .then(response =>{
+                    const id = response.data;
+    
+                    axios.get(`${url}/${id}`)
+                        .then(response => {
+                            dispatch(createBookSuccess(response.data));
+                            history.push('/');
+                        }).catch(error=>{
+                            console.log(error.response.data);
+                            const errorPayload = {};
+                            errorPayload['message'] = error.response.data;
+                            errorPayload['status'] = error.response.status;
+                            dispatch(createBookError(errorPayload));
+                        });
+                }).catch(error=>{
+                    console.log(error.response.data);
+                    const errorPayload = {};
+                    errorPayload['message'] = error.response.data.message;
+                    errorPayload['status'] = error.response.status;
+                    dispatch(createBookError(errorPayload));
+                });
+        }
     }
+    
 }
 export const fetchBooksLoading = (data) =>{
     return {
@@ -89,6 +141,7 @@ const normalizeResponse =  (data) => {
     console.log(arr);
     return arr;
 }
+// FETCH
 export const fetchBooks = () => {
     let isLoading = true;
     return (dispatch) => {
